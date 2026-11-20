@@ -1,0 +1,485 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Cutflow</title>
+<!-- the web version (Add to Home Screen); harmless in the desktop app -->
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="theme-color" content="#110c0f">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Cutflow">
+  <script type="module" crossorigin src="/app/assets/index-BPMOQAVR.js"></script>
+  <link rel="stylesheet" crossorigin href="/app/assets/index--ABOQFDd.css">
+</head>
+<body class="ai-off">
+
+<div id="app">
+  <div id="xpTop" aria-hidden="true"><i id="lvlBar"></i></div>
+  <div id="titlebar" data-tauri-drag-region>
+    <button class="brand" id="brand" title="Home"><svg class="logo-svg" viewBox="0 0 64 64" aria-hidden="true"><rect x="2" y="2" width="60" height="60" rx="17" fill="#ec7f94"/><rect x="13" y="47" width="11" height="5" rx="2.5" fill="#1a1116" opacity=".35"/><rect x="27" y="47" width="15" height="5" rx="2.5" fill="#1a1116" opacity=".35"/><rect x="45" y="47" width="7" height="5" rx="2.5" fill="#1a1116" opacity=".35"/><path d="M18 27.5l9 9 19-19" fill="none" stroke="#1a1116" stroke-width="7.5" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="brand-name">Cutflow</span></button>
+    <div class="tb-stats" data-tauri-drag-region>
+      <button class="ai-tag" id="aiTag" hidden></button>
+      <button class="ai-start" id="aiStart" hidden title="Start Ollama on this computer"><svg class="gi" viewBox="0 0 24 24" aria-hidden="true"><path d="M7.5 5.5v13l10.5-6.5z"/></svg>Start</button>
+      <button class="chip-stat" id="lvlChip" aria-haspopup="dialog" aria-expanded="false">Lv <b id="lvlNum">1</b> <span id="lvlName"></span></button>
+      <button class="chip-stat" id="todayChip" aria-haspopup="dialog" aria-expanded="false" title="Your streak and today’s wins — click for the calendar"><span class="cs-i"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21c-3.6 0-6.5-2.6-6.5-6.2 0-3.4 2.6-5.3 3.6-8.3.3 2.1 1.4 3.3 2.6 3.9.4-2.4 1.6-4.8 3.6-6.4-.2 3 1 4.9 2.2 6.6.9 1.3 1 2.6 1 4.2C18.5 18.4 15.6 21 12 21z"/></svg></span><b id="streakNum">0</b><span class="cs-sep"></span><span class="cs-i"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m4.5 12.5 4.5 4.5 10.5-10.5"/></svg></span><b id="todayNum">0</b> today</button>
+      <button class="ghost iconbtn" id="soundBtn" title="Sound on/off"></button>
+    </div>
+    <div class="wc" hidden><button class="wc-b" data-wc="min" title="Minimize"><svg viewBox="0 0 10 10"><path d="M1 5h8"/></svg></button><button class="wc-b" data-wc="max" title="Maximize"><svg viewBox="0 0 10 10"><rect x="1.5" y="1.5" width="7" height="7"/></svg></button><button class="wc-b close" data-wc="close" title="Close"><svg viewBox="0 0 10 10"><path d="M1.5 1.5l7 7M8.5 1.5l-7 7"/></svg></button></div>
+  </div>
+
+  <div class="shell">
+    <nav id="side">
+      <div class="side-top">
+        <button class="side-home" id="homeBtn" title="Home"><span class="si"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 10.5 12 3.5l8.5 7"/><path d="M5.5 9v10.5h13V9"/><path d="M10 19.5v-5.5h4v5.5"/></svg></span><span class="sl">Home</span></button>
+        <button class="side-toggle" id="sideToggle" title="Collapse the sidebar (Ctrl+B)"><span class="si"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2.5"/><path d="M9 4v16"/></svg></span></button>
+      </div>
+      <div class="side-h"><span class="sl">Projects</span> <button class="ghost iconbtn" id="newProjBtn" title="New project (Ctrl+N)">+</button></div>
+      <div id="projList"></div>
+      <div id="streakBox"></div>
+      <div class="side-foot">
+        <button class="ghost" id="tplBtn" title="Templates"><span class="si"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="7" height="7" rx="1.8"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.8"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.8"/><path d="M17 13.5v7M13.5 17h7"/></svg></span><span class="sl">Templates</span></button>
+        <button class="ghost" id="setBtn" title="Settings"><span class="si"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-1.8-.3 1.6 1.6 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.6 1.6 0 0 0-1-1.5 1.6 1.6 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.6 1.6 0 0 0 .3-1.8 1.6 1.6 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.6 1.6 0 0 0 1.5-1 1.6 1.6 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.6 1.6 0 0 0 1.8.3H9a1.6 1.6 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.6 1.6 0 0 0 1 1.5 1.6 1.6 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.6 1.6 0 0 0-.3 1.8V9a1.6 1.6 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.6 1.6 0 0 0-1.5 1z"/></svg></span><span class="sl">Settings</span></button>
+      </div>
+    </nav>
+
+    <main id="main">
+      <section id="welcome" hidden>
+        <div class="welcome-clips" id="welcomeClips"></div>
+        <h1>What are we editing today?</h1>
+        <p>Start a project from your workflow template. Each stage is a clip on the timeline — finish its steps and watch it fill up.</p>
+        <div><button class="primary big-done" id="welcomeNew">+ New project</button></div>
+      </section>
+
+      <section id="home" hidden></section>
+
+      <section id="project" hidden>
+        <div class="p-head">
+          <button id="pEmoji" title="Change icon"></button>
+          <div class="p-titles">
+            <h1 id="pTitle" contenteditable="true" spellcheck="false" title="Click to rename"></h1>
+            <button id="pClient" class="p-client" title="Client — click to change"></button>
+          </div>
+          <span class="p-pct" id="pPct"></span>
+          <button class="deadline" id="pDeadline" title="Deadline — click to change" aria-haspopup="dialog"></button>
+          <span class="spacer"></span>
+          <button id="miniBtn" data-desktop title="Float a small always-on-top widget over your editor (Ctrl+Shift+M)"><svg class="gi" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="8" width="12.5" height="12.5" rx="2.2"/><path d="M8 4h10a2 2 0 0 1 2 2v10"/></svg>Mini mode</button>
+          <button id="headToggle" class="ghost iconbtn" title="Collapse the header (Ctrl+Shift+B)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 15l6-6 6 6"/></svg></button>
+          <button id="pMenuBtn" class="ghost iconbtn" title="Project options" aria-label="Project options" aria-haspopup="menu"><svg class="gi" viewBox="0 0 24 24" aria-hidden="true"><circle class="dot" cx="5.5" cy="12" r="1.6"/><circle class="dot" cx="12" cy="12" r="1.6"/><circle class="dot" cx="18.5" cy="12" r="1.6"/></svg></button>
+        </div>
+
+        <div class="track-wrap"><div class="track" id="track"></div></div>
+
+        <div class="tabs">
+          <button class="tab" data-view="pipeline">Pipeline</button>
+          <button class="tab" data-view="revisions">Revisions <span class="badge" id="revBadge">0</span></button>
+          <span class="tab-ink" id="tabInk"></span>
+        </div>
+
+        <div class="p-body">
+          <div class="p-left" id="pLeft">
+            <div id="pipelineView"></div>
+
+            <!-- Revisions is its own page: the video + timeline card on the left (the #player card
+                 from the right column joins it via CSS grid), the notes card on the right. -->
+            <!-- Revisions page. Grid areas (styles.css): head / timeline / notes, and the #player card from the
+                 right column joins on the left once a video is loaded. -->
+            <div id="revisionsView" hidden>
+              <div class="rv-empty card" id="revEmpty" hidden>
+                <div class="big">🎯</div>
+                <p data-i18n="revEmpty"><b>No revision notes yet.</b><br>When feedback arrives, load the review text — or drop the .txt anywhere on this window.</p>
+                <div class="row" style="justify-content:center"><button class="primary" id="revEmptyLoad">Load a review</button><button class="ghost" data-act="video"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15.5V4M7.5 8.5 12 4l4.5 4.5"/><path d="M4.5 14.5v3.5a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2v-3.5"/></svg> Load the video</button></div>
+              </div>
+
+                            <header class="rv-head" id="revHead">
+                <button class="rv-pick" id="reviewSel" title="Switch between review rounds" aria-haspopup="menu"></button>
+                <button class="ghost" id="loadReviewBtn"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15.5V4M7.5 8.5 12 4l4.5 4.5"/><path d="M4.5 14.5v3.5a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2v-3.5"/></svg><span class="lbl">Load review</span></button>
+                <button class="ghost" id="dataBtn" aria-haspopup="menu" title="Export"><svg class="ico ex-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 14V3.5M8 7.5l4-4 4 4"/><path d="M8.5 10.5h-2a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2v-6a2 2 0 0 0-2-2h-2"/></svg><span class="lbl">Export</span> <svg class="chev" viewBox="0 0 12 8" aria-hidden="true"><path d="M1 1.5l5 5 5-5"/></svg></button>
+                <span class="spacer"></span>
+                <div id="catProgress"></div>
+                <span id="progText"></span>
+                <button class="pr-chip" id="prChip" hidden></button>
+                <button class="ghost" id="revVideoBtn" data-act="video" data-desktop title="Load video"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5.5" width="17" height="13" rx="2.5"/><path d="M10.5 9.5v5l4-2.5z"/></svg><span class="lbl">Load video</span></button>
+              </header>
+
+              <section class="rev-tl" id="revTl">
+                <div class="timeline" id="timeline"><div class="tl-inner" id="tlInner"></div></div>
+                <div class="row rangebar">
+                  <span class="rb-label">IN</span><input id="inInput" class="tc" placeholder="start" title="In point — press I while watching, or type mm:ss">
+                  <span class="rb-label">OUT</span><input id="outInput" class="tc" placeholder="end" title="Out point — press O while watching, or type mm:ss">
+                  <span id="rangeStats"></span>
+                  <button id="playRange" class="ghost"><svg class="gi" viewBox="0 0 24 24" aria-hidden="true"><path d="M7.5 5.5v13l10.5-6.5z"/></svg>Play In to Out</button>
+                  <button id="copyRange" class="ghost">Copy section</button>
+                  <button id="clearRange" class="ghost"><svg class="gi" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"/></svg>Clear</button>
+                  <span class="spacer"></span><span id="videoTotal"></span>
+                </div>
+              </section>
+
+              <section class="rev-notes" id="revMain">
+                <div class="row toolbar">
+                  <button class="ghost iconbtn" id="qBtn" title="Search (/)"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg></button><input id="q" type="search" placeholder="Search   /" autocomplete="off">
+                  <div class="seg" id="status"><button data-v="all">All</button><button data-v="todo">To do</button><button data-v="done">Done</button></div>
+                  <div class="chip-scroll"><div class="row" id="catChips"></div><div class="row" id="tagChips"></div></div>
+                  <button class="ghost iconbtn" id="filterBtn" title="Filter by category or tag" aria-haspopup="menu"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.5h16l-6 7.5v5.5l-4 1.5v-7z"/></svg><span class="fb-n" hidden></span></button>
+                  <button id="clearFilters" class="ghost" hidden>Clear filters</button>
+                  <span class="spacer"></span>
+                  <label class="toggle" title="Show all-caps notes in sentence case (the saved text is not changed)" aria-label="Show all-caps notes in sentence case (the saved text is not changed)"><input type="checkbox" id="readable"> Aa</label>
+                  <button class="ghost iconbtn" id="revKeys" title="Keyboard: j / k move · x done · Enter play · e edit · m comment · n new note · / search · I / O mark In and Out · Shift+X clear">?</button>
+                  <button id="addBtn" class="primary" title="New note (n) — at the video's current moment">+<span class="lbl"> Note</span></button>
+                </div>
+                <div id="list"></div>
+              </section>
+            </div>
+          </div>
+
+          <div class="split" id="split" role="separator" aria-orientation="vertical" title="Drag to resize · double-click to reset"></div>
+
+          <aside class="p-right">
+            <div class="card focus-card" id="focusCard">
+              <div class="now" id="nowCard"></div>
+              <div class="timer" id="timerCard">
+                <div class="t-ring">
+                  <svg viewBox="0 0 120 120"><circle class="bg" cx="60" cy="60" r="50"/><circle class="fg" id="tArc" cx="60" cy="60" r="50"/></svg>
+                </div>
+                <div class="t-info"><span id="tNum">25:00</span><small id="tLabel">Focus sprint</small></div>
+                <button id="tGo"><svg class="gi" viewBox="0 0 24 24" aria-hidden="true"><path d="M7.5 5.5v13l10.5-6.5z"/></svg>Start</button>
+                <button class="ghost iconbtn" id="tReset" title="Stop and reset" aria-label="Stop and reset"><svg class="gi" viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 12a7.5 7.5 0 1 0 2.2-5.3"/><path d="M4.5 4.5v4h4"/></svg></button>
+                <div class="presets" id="tPresets"></div>
+              </div>
+            </div>
+
+            <div class="card" id="player" data-desktop>
+              <div class="player-empty" id="playerEmpty">
+                <div class="big upl"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15.5V4M7.5 8.5 12 4l4.5 4.5"/><path d="M4.5 14.5v3.5a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2v-3.5"/></svg></div>
+                <div style="margin:4px 0 10px">Load this project's video to jump to timestamps and add notes while watching.</div>
+                <button id="videoBtn">Load video</button>
+              </div>
+              <video id="video" controls preload="metadata" hidden></video>
+              <iframe id="driveFrame" hidden allow="autoplay; fullscreen"></iframe>
+              <div id="playerStatus"></div>
+              <div class="row" id="playerBar" hidden style="margin-top:8px">
+                <span id="curTime">00:00</span>
+                <span class="muted small" id="videoName" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:40%"></span>
+                <span class="spacer"></span>
+                
+                <button id="videoMenu" class="ghost iconbtn" title="Change or close video" aria-label="Change or close video"><svg class="gi" viewBox="0 0 24 24" aria-hidden="true"><circle class="dot" cx="5.5" cy="12" r="1.6"/><circle class="dot" cx="12" cy="12" r="1.6"/><circle class="dot" cx="18.5" cy="12" r="1.6"/></svg></button>
+              </div>
+            </div>
+
+            <div class="card parking">
+              <div class="card-h" title="Park a stray idea here, then get back to work">🅿️ Parking lot</div>
+              <textarea id="parking" placeholder="Park a stray idea here — that transition, the sound to find later…"></textarea>
+            </div>
+          </aside>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- phones: the main places sit under the thumb -->
+  <nav id="phoneNav" aria-label="Main">
+    <button id="phoneHome"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 10.5 12 3.5l8.5 7"/><path d="M5.5 9v10.5h13V9"/><path d="M10 19.5v-5.5h4v5.5"/></svg><span>Home</span></button>
+    <button id="phoneProjects" aria-expanded="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 7.5a2 2 0 0 1 2-2h4l2 2h7a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-13a2 2 0 0 1-2-2z"/></svg><span>Projects</span></button>
+    <button id="phoneNew" title="New project"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button>
+    <button id="phoneTpl"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="7" height="7" rx="1.8"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.8"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.8"/><path d="M17 13.5v7M13.5 17h7"/></svg><span>Templates</span></button>
+    <button id="phoneSettings"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 2.5v3M12 18.5v3M4.6 4.6l2.1 2.1M17.3 17.3l2.1 2.1M2.5 12h3M18.5 12h3M4.6 19.4l2.1-2.1M17.3 6.7l2.1-2.1"/></svg><span>Settings</span></button>
+  </nav>
+</div>
+
+<!-- floating widget -->
+<div id="mini">
+  <div class="mini-bar" data-tauri-drag-region><span id="miniStage" data-tauri-drag-region></span><div class="wc" hidden><button class="wc-b" data-wc="min" title="Minimize"><svg viewBox="0 0 10 10"><path d="M1 5h8"/></svg></button><button class="wc-b close" data-wc="close" title="Close"><svg viewBox="0 0 10 10"><path d="M1.5 1.5l7 7M8.5 1.5l-7 7"/></svg></button></div></div>
+  <div class="mini-body">
+    <div class="mini-task" id="miniTask"></div>
+    <div class="mini-prog" id="miniProg"></div>
+    <div class="row">
+      <button class="primary" id="miniDone"><svg class="gi" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Done</button>
+      <button id="miniTimer"><svg class="gi" viewBox="0 0 24 24" aria-hidden="true"><path d="M7.5 5.5v13l10.5-6.5z"/></svg>25:00</button>
+      <span class="spacer"></span>
+      <button class="ghost iconbtn" id="miniNext" title="Show another step" aria-label="Show another step"><svg class="gi" viewBox="0 0 24 24" aria-hidden="true"><path d="M19.5 12a7.5 7.5 0 1 1-2.2-5.3"/><path d="M19.5 4.5v4h-4"/></svg></button>
+      <button class="ghost iconbtn" id="miniExpand" title="Back to the full window" aria-label="Back to the full window"><svg class="gi" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 4.5h5.5V10M10 19.5H4.5V14M19.5 4.5l-6 6M4.5 19.5l6-6"/></svg></button>
+    </div>
+  </div>
+</div>
+
+<canvas id="fx"></canvas>
+<div id="toasts"></div>
+<div id="celebrate" hidden><div class="cel-card"><div class="cel-emoji"></div><div class="cel-title"></div><div class="cel-sub"></div></div></div>
+
+<!-- "are you sure?" (ui/confirm.ts) -->
+<dialog id="confirmDlg" style="width:min(440px,94vw)">
+  <h2 id="cfTitle"></h2>
+  <p id="cfBody"></p>
+  <div class="row cf-btns"><span class="spacer"></span><button class="ghost" id="cfCancel">Cancel</button><button id="cfOk"></button></div>
+</dialog>
+
+<!-- new project -->
+<dialog id="newDlg">
+  <form method="dialog" id="newForm">
+    <h2>New project</h2>
+    <div class="row" style="align-items:flex-end;flex-wrap:nowrap;margin-bottom:6px">
+      <button type="button" id="newEmoji" style="font-size:26px;width:54px;height:46px;justify-content:center;padding:0">🎬</button>
+      <label class="field" style="flex:1;margin:0">Name<input name="title" placeholder="e.g. Lucky ep. 4" autocomplete="off" required></label>
+      <label class="field" style="margin:0">Deadline (optional)<input name="deadline" type="date"></label>
+    </div>
+    <label class="field" style="margin:10px 0 0">Client (optional)<input name="client" list="clientList" placeholder="Who is this for? Projects are grouped by client" autocomplete="off"></label>
+    <div class="row" style="margin:20px 0 8px"><h3 style="margin:0">Start from a template</h3><span class="spacer"></span><button type="button" class="ai-btn small" id="newAi">✨ Draft with AI</button></div>
+    <div class="tpl-pick" id="newTpls"></div>
+    <div class="dlg-actions">
+      <button value="cancel" formnovalidate>Cancel</button>
+      <button value="ok" class="primary">Create project</button>
+    </div>
+  </form>
+</dialog>
+
+<!-- emoji picker -->
+<dialog id="emojiDlg" style="width:min(420px,94vw)">
+  <h2>Pick an icon</h2>
+  <div class="emoji-grid" id="emojiGrid"></div>
+</dialog>
+
+<!-- stage editor (project pipeline or template) -->
+<dialog id="stagesDlg" style="width:min(760px,96vw)">
+  <h2 id="seTitle">Edit pipeline</h2>
+  <label class="field" id="seNameWrap">Template name<input id="seName" autocomplete="off"></label>
+  <p class="muted small" data-i18n="seHelp">One step per line. <b>Review categories</b> link revision notes to a stage (e.g. <i>Animation</i> notes show up under Animations).</p>
+  <div class="se-list" id="seList"></div>
+  <div class="dlg-actions">
+    <button id="seAdd">+ Add stage</button>
+    <span class="spacer"></span>
+    <button id="seCancel">Cancel</button>
+    <button id="seSave" class="primary">Save</button>
+  </div>
+</dialog>
+
+<!-- templates -->
+<dialog id="tplDlg">
+  <h2>Templates</h2>
+  <p class="muted">Your workflow as reusable stages. New projects start from one of these.</p>
+  <div id="tplList"></div>
+  <div class="dlg-actions">
+    <button id="tplNew">+ New template</button>
+    <button id="tplAi" class="ai-btn">✨ Draft with AI</button>
+    <span class="spacer"></span>
+    <button id="tplClose" class="primary">Done</button>
+  </div>
+</dialog>
+
+<!-- settings -->
+<dialog id="setDlg">
+  <div class="set-top"><h2><span class="si"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-1.8-.3 1.6 1.6 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.6 1.6 0 0 0-1-1.5 1.6 1.6 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.6 1.6 0 0 0 .3-1.8 1.6 1.6 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.6 1.6 0 0 0 1.5-1 1.6 1.6 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.6 1.6 0 0 0 1.8.3H9a1.6 1.6 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.6 1.6 0 0 0 1 1.5 1.6 1.6 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.6 1.6 0 0 0-.3 1.8V9a1.6 1.6 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.6 1.6 0 0 0-1.5 1z"/></svg></span>Settings</h2><input id="setSearch" type="search" placeholder="Search settings" autocomplete="off" spellcheck="false"></div>
+
+  <div class="set-cols">
+  <div class="set-col">
+  <section class="set-sec">
+    <h3>Language</h3>
+    <div class="set-card">
+      <div class="set-row"><span class="set-i"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.7 3.8 5.7 3.8 9s-1.3 6.3-3.8 9c-2.5-2.7-3.8-5.7-3.8-9S9.5 5.7 12 3z"/></svg></span><div class="lbl"><b>Language</b><span>Automatic follows this computer</span></div>
+        <div class="seg" id="sLang"><button data-v="auto">Automatic</button><button data-v="en" data-no-i18n>English</button><button data-v="pt" data-no-i18n>Português</button></div></div>
+      <div class="set-row" id="sAddrRow"><span class="set-i"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c.8-3.6 3.6-5.5 7-5.5s6.2 1.9 7 5.5"/></svg></span><div class="lbl"><b>How Cutflow talks to you</b><span>Words like “ready” and “welcome”</span></div>
+        <div class="seg" id="sAddr"><button data-v="m">He</button><button data-v="f">She</button><button data-v="n">Neutral</button></div></div>
+    </div>
+  </section>
+
+  <section class="set-sec">
+    <h3>Sound and celebrations</h3>
+    <div class="set-card">
+      <div class="set-row"><span class="set-i"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"/></svg></span><div class="lbl"><b>Sounds</b><span>Pops, chimes and the timer bell</span></div><input type="checkbox" class="switch" id="sSound"></div>
+      <div class="set-row"><span class="set-i"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6"/></svg></span><div class="lbl"><b>Volume</b></div><input type="range" id="sVol" min="0" max="1" step="0.05"></div>
+      <div class="set-row"><span class="set-i"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20 9 6l9 9z"/><path d="M13 3.5v2M20.5 11h-2M17.8 6.2l-1.4 1.4M19.5 3.5l.01 0M21 15.5l.01 0M10.5 2.5l.01 0"/></svg></span><div class="lbl"><b>Celebrations</b><span>How much confetti and screen shake</span></div>
+        <div class="seg" id="sParty"><button data-v="calm">Calm</button><button data-v="lively">Lively</button><button data-v="party">Party</button></div></div>
+    </div>
+  </section>
+
+  <section class="set-sec">
+    <h3>Focus timer</h3>
+    <div class="set-card">
+      <div class="set-row"><span class="set-i"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.2"/></svg></span><div class="lbl"><b>Focus sprint</b><span>Default length of a sprint</span></div><label class="num"><input type="number" id="sSprint" min="1" max="180"> min</label></div>
+      <div class="set-row"><span class="set-i"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17 9h1a3.5 3.5 0 0 1 0 7h-1"/><path d="M3 9h14v7a5 5 0 0 1-5 5H8a5 5 0 0 1-5-5z"/><path d="M7 2.5v3M10.5 2.5v3M14 2.5v3"/></svg></span><div class="lbl"><b>Break</b><span>Default length of a break</span></div><label class="num"><input type="number" id="sBrk" min="1" max="60"> min</label></div>
+      <div class="set-row"><span class="set-i"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2M9.5 2.5h5M19 6l1.5-1.5"/></svg></span><div class="lbl"><b>Ticking at the end</b><span>Soft tick in the last 10 seconds</span></div><input type="checkbox" class="switch" id="sTick"></div>
+    </div>
+  </section>
+
+  <section class="set-sec">
+    <h3>Your data</h3>
+    <div class="set-card">
+      <div class="set-row" data-desktop><span class="set-i"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7.5a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 13.5l2 2 4-4"/></svg></span><div class="lbl"><b>Saved automatically</b><span>On this computer, with a daily backup of the last 14 days</span></div><button class="ghost" id="sFolder">Open folder</button></div>
+      <div class="set-row" data-web><span class="set-i"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7.5a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 13.5l2 2 4-4"/></svg></span><div class="lbl"><b>Saved in this browser</b><span>Sign in to your Cutflow account to keep a copy and use it on your other devices</span></div></div>
+      <div class="set-row" id="accountRow" hidden></div>
+      <div class="set-row" id="driveRow" hidden></div>
+      <div class="set-row"><span class="set-i"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="5" rx="1.2"/><path d="M5 9v9.5a1.5 1.5 0 0 0 1.5 1.5h11a1.5 1.5 0 0 0 1.5-1.5V9M10 13h4"/></svg></span><div class="lbl"><b>Full backup</b><span>One file with every project, to keep or move to another PC</span></div>
+        <div class="row" style="flex-wrap:nowrap"><button class="ghost" id="sExport">Download</button><label class="btn ghost">Restore…<input type="file" id="sImport" accept=".json,application/json" hidden></label></div></div>
+    </div>
+  </section>
+
+  <section class="set-sec" id="prSet" hidden>
+    <h3>Premiere Pro</h3>
+    <div class="set-card">
+      <div class="set-row"><span class="set-i"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="3"/><path d="M8 16V8.5h2.5a2.2 2.2 0 0 1 0 4.4H8M14 16v-4.5M14 13c.4-1.2 1.4-1.8 2.8-1.6"/></svg></span><div class="lbl"><b>Markers sync</b><span id="prStatus">Revision notes become sequence markers, both ways</span></div><button id="prInstall">Install panel</button></div>
+    </div>
+  </section>
+
+  <section class="set-sec" id="updRow" hidden>
+    <h3>Updates</h3>
+    <div class="set-card">
+      <div class="set-row"><span class="set-i"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 12a8.5 8.5 0 0 1-14.7 5.8L3.5 15.5M3.5 12a8.5 8.5 0 0 1 14.7-5.8l2.3 2.3"/><path d="M20.5 3.5v5h-5M3.5 20.5v-5h5"/></svg></span><div class="lbl"><b>Cutflow <span id="appVersion"></span></b><span id="updStatus">Updates install automatically when you restart.</span></div><button id="updCheck">Check now</button></div>
+    </div>
+  </section>
+
+  </div>
+  <div class="set-col">
+  <section class="set-sec" data-desktop>   <!-- local AI needs Ollama on this computer: not on the web version -->
+    <h3 id="aiSetHead">AI helper</h3>
+    <div class="set-card">
+      <div class="set-row ai-intro"><span class="set-i"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5l1.9 4.8 4.8 1.9-4.8 1.9L12 16.9l-1.9-4.8-4.8-1.9 4.8-1.9z"/><path d="M19 15.5l.7 1.8 1.8.7-1.8.7-.7 1.8-.7-1.8-1.8-.7 1.8-.7z"/></svg></span><div class="lbl"><b>Runs on this computer</b><span data-i18n="aiIntro">Drafts templates, reworks a stage’s steps and tidies messy reviews. Uses <b>Ollama</b>, a free app — nothing leaves your PC.</span></div></div>
+      <div class="ai-status" id="aiStatus"><span class="ai-dot"></span><span id="aiStatusText">Checking…</span><span class="spacer"></span><button class="ghost" id="aiRecheck"><svg class="gi" viewBox="0 0 24 24" aria-hidden="true"><path d="M19.5 12a7.5 7.5 0 1 1-2.2-5.3"/><path d="M19.5 4.5v4h-4"/></svg>Check again</button></div>
+      <div id="aiNoServer" hidden class="ai-steps">
+        <p class="small" data-i18n="aiInstall">Install Ollama, open it, then press <b>Check again</b>. The ✨ buttons appear once it’s running.</p>
+        <button id="aiGetOllama">Get Ollama (free) ↗</button>
+        <button class="primary" id="aiStartSet" hidden><svg class="gi" viewBox="0 0 24 24" aria-hidden="true"><path d="M7.5 5.5v13l10.5-6.5z"/></svg>Start Ollama</button>
+      </div>
+      <div id="aiModels" hidden>
+        <div class="set-row"><span class="set-i"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="6" width="12" height="12" rx="2.5"/><path d="M9.5 2.5v3.5M14.5 2.5v3.5M9.5 18v3.5M14.5 18v3.5M2.5 9.5H6M2.5 14.5H6M18 9.5h3.5M18 14.5h3.5"/></svg></span><div class="lbl"><b>Model</b><span>The AI “brain” Cutflow uses</span></div><select id="aiModel"></select></div>
+        <div class="set-row"><span class="set-i"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2.5M9.5 2.5h5"/></svg></span><div class="lbl"><b>Free memory after</b><span>How long the model stays loaded once the AI is done. Shorter keeps your PC fast for editing</span></div><select id="aiKeep"><option value="0">Right away</option><option value="1">1 minute</option><option value="5">5 minutes</option><option value="15">15 minutes</option><option value="60">1 hour</option></select></div>
+        <div class="ai-recs" id="aiRecs"></div>
+        <div id="aiCustomWrap">
+          <div class="row" style="flex-wrap:nowrap"><input id="aiCustom" placeholder="Download another model by name, e.g. gemma3:4b" autocomplete="off" spellcheck="false" style="flex:1"><button id="aiCustomPull">⬇ Download</button></div>
+          <div class="small muted" style="margin:4px 0 2px">Browse all models at <button class="linkish" id="aiBrowse">ollama.com/library ↗</button> — smaller ones (2–8B) suit this best.</div>
+        </div>
+        <div class="ai-pull" id="aiPull" hidden><div class="ai-pull-bar"><i id="aiPullBar"></i></div><span class="small" id="aiPullText"></span><button class="ghost" id="aiPullCancel">Cancel</button></div>
+      </div>
+      <details class="ai-adv"><summary class="small muted">Use a different AI server</summary>
+        <div class="set-row"><span class="set-i"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 2.5V7M15 2.5V7M6 7h12v4a6 6 0 0 1-12 0zM12 17v4.5"/></svg></span><div class="lbl"><b>Server type</b></div><div class="seg" id="aiProvider"><button data-v="ollama">Ollama</button><button data-v="openai">Other server</button></div></div>
+        <label class="field">Server address<input id="aiUrl" autocomplete="off" placeholder="http://localhost:11434"></label>
+      </details>
+    </div>
+  </section>
+
+  </div>
+  </div>
+  <div class="dlg-actions"><button id="setClose" class="primary" autofocus>Done</button></div>
+</dialog>
+
+<!-- add / edit revision note -->
+<dialog id="editDlg">
+  <form method="dialog" id="editForm">
+    <h2 id="editTitle">Add note</h2>
+    <div class="grid2">
+      <label class="field">Start (mm:ss)<input name="start" placeholder="02:43" autocomplete="off"></label>
+      <label class="field">End (optional)<input name="end" placeholder="02:46" autocomplete="off"></label>
+    </div>
+    <div class="cats" id="editCats"></div>
+    <label class="field">What to do<textarea name="text" rows="5"></textarea></label>
+    <label class="field">Comments<textarea name="notes" rows="2" placeholder="Your own notes, progress, questions…"></textarea></label>
+    <div class="err" id="editErr"></div>
+    <div class="dlg-actions">
+      <button value="cancel" formnovalidate>Cancel</button>
+      <button value="save" class="primary">Save note</button>
+    </div>
+  </form>
+</dialog>
+
+<!-- load review -->
+<dialog id="reviewDlg">
+  <h2>Load a review</h2>
+  <div class="drop">
+    Drag a <b>.txt</b> file here, or <label class="linkish">choose a file<input type="file" id="reviewFile" accept=".txt,.md,text/plain" hidden></label>
+    <div class="small" style="margin-top:4px">Format: <code>*ANIMATION* 01:03 TO 01:10 - TEXT</code></div>
+  </div>
+  <label class="field">…or paste the text here<textarea id="reviewText" rows="8" placeholder="*SOUND* 11:30 - ..."></textarea></label>
+  <div class="row" style="margin:-4px 0 10px">
+    <div class="small" id="reviewInfo"></div><span class="spacer"></span>
+    <button class="ghost small" id="reviewRevert" hidden>↩ Back to the original</button>
+    <button class="ai-btn small" id="reviewAi" title="Turn messy notes (WhatsApp, e-mail…) into the review format">✨ Tidy up with AI</button>
+  </div>
+  <label class="field">Round name<input id="reviewName" placeholder="e.g. Revision 2" autocomplete="off"></label>
+  <div class="err" id="reviewErr"></div>
+  <div class="dlg-actions">
+    <button id="reviewCancel">Cancel</button>
+    <span class="spacer"></span>
+    <button id="reviewAppend">Add to current round</button>
+    <button id="reviewNew" class="primary">Open as new round</button>
+  </div>
+</dialog>
+
+<!-- load video -->
+<dialog id="videoDlg">
+  <h2>Load video</h2>
+  <h3>From this computer (recommended)</h3>
+  <p class="muted" data-i18n="videoHelp">The list follows the video: the current note lights up and clicking a timestamp jumps there. Google Drive files work through Google Drive for desktop — look in <b>G:\My Drive</b>. The file is remembered for this project.</p>
+  <button id="pickVideo" class="primary">Choose video file…</button>
+  <h3>Google Drive link</h3>
+  <p class="muted">Synced only when shared as “Anyone with the link”; private files open in Google's player, which can't report the time.</p>
+  <div class="row">
+    <input id="driveUrl" placeholder="https://drive.google.com/file/d/…/view" style="flex:1" autocomplete="off">
+    <button id="driveLoad">Load link</button>
+  </div>
+  <div class="err" id="driveErr"></div>
+  <div class="dlg-actions">
+    <button id="videoClose" class="danger" hidden>Close video</button>
+    <span class="spacer"></span>
+    <button id="videoCancel">Cancel</button>
+  </div>
+</dialog>
+
+<!-- export / manage revisions -->
+<!-- AI helper -->
+<dialog id="aiDlg" style="width:min(640px,96vw)">
+  <h2 id="aiTitle">✨ AI helper</h2>
+  <p class="muted" id="aiHint"></p>
+  <div class="ai-chips" id="aiChips"></div>
+  <label class="field" id="aiPromptWrap"><span id="aiPromptLabel">What do you want?</span><textarea id="aiPrompt" rows="3"></textarea></label>
+  <div class="ai-think" id="aiThink" hidden>
+    <div class="ai-orb">✨</div>
+    <div style="flex:1;min-width:0"><b id="aiThinkMsg">Thinking…</b><div class="ai-shimmer"><i></i></div><span class="small muted" id="aiThinkSub"></span></div>
+  </div>
+  <div class="ai-preview" id="aiPreview" hidden></div>
+  <div class="err" id="aiErr"></div>
+  <div class="dlg-actions">
+    <button id="aiCancel">Cancel</button>
+    <span class="spacer"></span>
+    <button id="aiGo">✨ Generate</button>
+    <button id="aiApply" class="primary" hidden>Use this</button>
+  </div>
+</dialog>
+
+<!-- project menu -->
+<dialog id="pMenuDlg" style="width:min(420px,94vw)">
+  <h2>Project</h2>
+  <label class="field">Deadline<input type="date" id="pmDeadline"></label>
+  <div style="display:grid;gap:8px">
+    <button id="pmEdit">🛠️ Edit stages &amp; steps</button>
+    <button id="pmSaveTpl">🧩 Save pipeline as a template</button>
+    <button id="pmDup">📄 Duplicate project</button>
+    <button id="pmDelete" class="danger">🗑️ Delete project</button>
+  </div>
+  <div class="dlg-actions"><button id="pmClose" class="primary">Done</button></div>
+</dialog>
+
+<!-- link a round to a Premiere sequence that already has markers -->
+<dialog id="prLinkDlg" style="width:min(560px,96vw)">
+  <h2>Markers already on <span id="prlSeq"></span></h2>
+  <p class="small" id="prlInfo"></p>
+  <div id="prlPick">
+    <div class="row prl-head">
+      <span class="small">Pick the markers that should become notes</span><span class="spacer"></span>
+      <button class="ghost small" id="prlAll">All</button><button class="ghost small" id="prlNone">None</button>
+    </div>
+    <div class="prl-list" id="prlList"></div>
+    <p class="small prl-count" id="prlCount"></p>
+  </div>
+  <div class="dlg-actions">
+    <button id="prlCancel">Cancel</button>
+    <span class="spacer"></span>
+    <button id="prlLink" class="primary">Link</button>
+  </div>
+</dialog>
+
+<datalist id="clientList"></datalist>
+<!-- the whole UI: src/main.ts imports every part in order -->
+</body>
+</html>
