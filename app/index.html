@@ -13,8 +13,8 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Cutflow">
-  <script type="module" crossorigin src="/app/assets/index-BPMOQAVR.js"></script>
-  <link rel="stylesheet" crossorigin href="/app/assets/index--ABOQFDd.css">
+  <script type="module" crossorigin src="/app/assets/index-DrV47v-j.js"></script>
+  <link rel="stylesheet" crossorigin href="/app/assets/index-CvO4xlDB.css">
 </head>
 <body class="ai-off">
 
@@ -273,25 +273,25 @@
 <dialog id="setDlg">
   <div class="set-top"><h2><span class="si"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-1.8-.3 1.6 1.6 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.6 1.6 0 0 0-1-1.5 1.6 1.6 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.6 1.6 0 0 0 .3-1.8 1.6 1.6 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.6 1.6 0 0 0 1.5-1 1.6 1.6 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.6 1.6 0 0 0 1.8.3H9a1.6 1.6 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.6 1.6 0 0 0 1 1.5 1.6 1.6 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.6 1.6 0 0 0-.3 1.8V9a1.6 1.6 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.6 1.6 0 0 0-1.5 1z"/></svg></span>Settings</h2><input id="setSearch" type="search" placeholder="Search settings" autocomplete="off" spellcheck="false"></div>
 
-  <div class="set-cols">
-  <div class="set-col">
+  <!-- sections in order of use; on wide windows a list of them sits on the left (built in initSettingsSearch) -->
+  <div class="set-body">
+  <nav class="set-nav" id="setNav" aria-label="Settings sections"></nav>
+  <div class="set-main" id="setMain">
   <section class="set-sec">
-    <h3>Language</h3>
+    <h3>Account and sync</h3>
+    <div class="set-card">
+      <div class="set-row" id="accountRow" hidden></div>
+      <div class="set-row" id="driveRow" hidden></div>
+    </div>
+  </section>
+
+  <section class="set-sec">
+    <h3>General</h3>
     <div class="set-card">
       <div class="set-row"><span class="set-i"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.7 3.8 5.7 3.8 9s-1.3 6.3-3.8 9c-2.5-2.7-3.8-5.7-3.8-9S9.5 5.7 12 3z"/></svg></span><div class="lbl"><b>Language</b><span>Automatic follows this computer</span></div>
         <div class="seg" id="sLang"><button data-v="auto">Automatic</button><button data-v="en" data-no-i18n>English</button><button data-v="pt" data-no-i18n>Português</button></div></div>
       <div class="set-row" id="sAddrRow"><span class="set-i"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c.8-3.6 3.6-5.5 7-5.5s6.2 1.9 7 5.5"/></svg></span><div class="lbl"><b>How Cutflow talks to you</b><span>Words like “ready” and “welcome”</span></div>
         <div class="seg" id="sAddr"><button data-v="m">He</button><button data-v="f">She</button><button data-v="n">Neutral</button></div></div>
-    </div>
-  </section>
-
-  <section class="set-sec">
-    <h3>Sound and celebrations</h3>
-    <div class="set-card">
-      <div class="set-row"><span class="set-i"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"/></svg></span><div class="lbl"><b>Sounds</b><span>Pops, chimes and the timer bell</span></div><input type="checkbox" class="switch" id="sSound"></div>
-      <div class="set-row"><span class="set-i"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6"/></svg></span><div class="lbl"><b>Volume</b></div><input type="range" id="sVol" min="0" max="1" step="0.05"></div>
-      <div class="set-row"><span class="set-i"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20 9 6l9 9z"/><path d="M13 3.5v2M20.5 11h-2M17.8 6.2l-1.4 1.4M19.5 3.5l.01 0M21 15.5l.01 0M10.5 2.5l.01 0"/></svg></span><div class="lbl"><b>Celebrations</b><span>How much confetti and screen shake</span></div>
-        <div class="seg" id="sParty"><button data-v="calm">Calm</button><button data-v="lively">Lively</button><button data-v="party">Party</button></div></div>
     </div>
   </section>
 
@@ -305,14 +305,12 @@
   </section>
 
   <section class="set-sec">
-    <h3>Your data</h3>
+    <h3>Sound and celebrations</h3>
     <div class="set-card">
-      <div class="set-row" data-desktop><span class="set-i"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7.5a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 13.5l2 2 4-4"/></svg></span><div class="lbl"><b>Saved automatically</b><span>On this computer, with a daily backup of the last 14 days</span></div><button class="ghost" id="sFolder">Open folder</button></div>
-      <div class="set-row" data-web><span class="set-i"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7.5a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 13.5l2 2 4-4"/></svg></span><div class="lbl"><b>Saved in this browser</b><span>Sign in to your Cutflow account to keep a copy and use it on your other devices</span></div></div>
-      <div class="set-row" id="accountRow" hidden></div>
-      <div class="set-row" id="driveRow" hidden></div>
-      <div class="set-row"><span class="set-i"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="5" rx="1.2"/><path d="M5 9v9.5a1.5 1.5 0 0 0 1.5 1.5h11a1.5 1.5 0 0 0 1.5-1.5V9M10 13h4"/></svg></span><div class="lbl"><b>Full backup</b><span>One file with every project, to keep or move to another PC</span></div>
-        <div class="row" style="flex-wrap:nowrap"><button class="ghost" id="sExport">Download</button><label class="btn ghost">Restore…<input type="file" id="sImport" accept=".json,application/json" hidden></label></div></div>
+      <div class="set-row"><span class="set-i"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"/></svg></span><div class="lbl"><b>Sounds</b><span>Pops, chimes and the timer bell</span></div><input type="checkbox" class="switch" id="sSound"></div>
+      <div class="set-row"><span class="set-i"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6"/></svg></span><div class="lbl"><b>Volume</b></div><input type="range" id="sVol" min="0" max="1" step="0.05"></div>
+      <div class="set-row"><span class="set-i"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20 9 6l9 9z"/><path d="M13 3.5v2M20.5 11h-2M17.8 6.2l-1.4 1.4M19.5 3.5l.01 0M21 15.5l.01 0M10.5 2.5l.01 0"/></svg></span><div class="lbl"><b>Celebrations</b><span>How much confetti and screen shake</span></div>
+        <div class="seg" id="sParty"><button data-v="calm">Calm</button><button data-v="lively">Lively</button><button data-v="party">Party</button></div></div>
     </div>
   </section>
 
@@ -323,15 +321,6 @@
     </div>
   </section>
 
-  <section class="set-sec" id="updRow" hidden>
-    <h3>Updates</h3>
-    <div class="set-card">
-      <div class="set-row"><span class="set-i"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 12a8.5 8.5 0 0 1-14.7 5.8L3.5 15.5M3.5 12a8.5 8.5 0 0 1 14.7-5.8l2.3 2.3"/><path d="M20.5 3.5v5h-5M3.5 20.5v-5h5"/></svg></span><div class="lbl"><b>Cutflow <span id="appVersion"></span></b><span id="updStatus">Updates install automatically when you restart.</span></div><button id="updCheck">Check now</button></div>
-    </div>
-  </section>
-
-  </div>
-  <div class="set-col">
   <section class="set-sec" data-desktop>   <!-- local AI needs Ollama on this computer: not on the web version -->
     <h3 id="aiSetHead">AI helper</h3>
     <div class="set-card">
@@ -359,8 +348,25 @@
     </div>
   </section>
 
+  <section class="set-sec">
+    <h3>Your data</h3>
+    <div class="set-card">
+      <div class="set-row" data-desktop><span class="set-i"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7.5a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 13.5l2 2 4-4"/></svg></span><div class="lbl"><b>Saved automatically</b><span>On this computer, with a daily backup of the last 14 days</span></div><button class="ghost" id="sFolder">Open folder</button></div>
+      <div class="set-row" data-web><span class="set-i"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7.5a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 13.5l2 2 4-4"/></svg></span><div class="lbl"><b>Saved in this browser</b><span>Sign in to your Cutflow account to keep a copy and use it on your other devices</span></div></div>
+      <div class="set-row"><span class="set-i"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="5" rx="1.2"/><path d="M5 9v9.5a1.5 1.5 0 0 0 1.5 1.5h11a1.5 1.5 0 0 0 1.5-1.5V9M10 13h4"/></svg></span><div class="lbl"><b>Full backup</b><span>One file with every project, to keep or move to another PC</span></div>
+        <div class="row" style="flex-wrap:nowrap"><button class="ghost" id="sExport">Download</button><label class="btn ghost">Restore…<input type="file" id="sImport" accept=".json,application/json" hidden></label></div></div>
+    </div>
+  </section>
+
+  <section class="set-sec" id="updRow" hidden>
+    <h3>Updates</h3>
+    <div class="set-card">
+      <div class="set-row"><span class="set-i"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 12a8.5 8.5 0 0 1-14.7 5.8L3.5 15.5M3.5 12a8.5 8.5 0 0 1 14.7-5.8l2.3 2.3"/><path d="M20.5 3.5v5h-5M3.5 20.5v-5h5"/></svg></span><div class="lbl"><b>Cutflow <span id="appVersion"></span></b><span id="updStatus">Updates install automatically when you restart.</span></div><button id="updCheck">Check now</button></div>
+    </div>
+  </section>
   </div>
   </div>
+
   <div class="dlg-actions"><button id="setClose" class="primary" autofocus>Done</button></div>
 </dialog>
 
