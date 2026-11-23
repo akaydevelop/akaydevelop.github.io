@@ -13,8 +13,8 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Cutflow">
-  <script type="module" crossorigin src="/app/assets/index-7__5kBAD.js"></script>
-  <link rel="stylesheet" crossorigin href="/app/assets/index-PZ8JlDHE.css">
+  <script type="module" crossorigin src="/app/assets/index-DIBjYuHw.js"></script>
+  <link rel="stylesheet" crossorigin href="/app/assets/index-Bnf0ltok.css">
 </head>
 <body class="ai-off">
 
@@ -281,8 +281,13 @@
       <label class="field" style="flex:1;margin:0">Name<input name="title" placeholder="e.g. Lucky ep. 4" autocomplete="off" required></label>
       <div class="field" style="margin:0"><span class="field-lbl">Deadline (optional)</span><input name="deadline" type="hidden"><button type="button" class="btn-soft new-dl-btn" id="newDeadlineBtn" aria-haspopup="dialog"></button></div>
     </div>
-    <label class="field" style="margin:10px 0 0">Client (optional)<input name="client" list="clientList" placeholder="Who is this for? Projects are grouped by client" autocomplete="off"></label>
-    <div class="row" style="margin:20px 0 8px"><h3 style="margin:0">Start from a template</h3><span class="spacer"></span><button type="button" class="ai-btn small" id="newAi">✨ Draft with AI</button></div>
+    <label class="field" style="margin:10px 0 0">Client (optional)
+      <span class="combo-wrap" id="newClientWrap">
+        <input name="client" placeholder="Who is this for? Projects are grouped by client" autocomplete="off">
+        <button type="button" class="combo-btn" id="newClientBtn" tabindex="-1" aria-label="Show clients"><svg class="gi" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>
+      </span>
+    </label>
+    <div class="row" style="margin:20px 0 8px"><h3 style="margin:0">Start from a template</h3><span class="spacer"></span><button type="button" class="ai-btn small" id="newAi"><svg class="gi" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5l1.9 4.8 4.8 1.9-4.8 1.9L12 16.9l-1.9-4.8-4.8-1.9 4.8-1.9z"/><path d="M19 15.5l.7 1.8 1.8.7-1.8.7-.7 1.8-.7-1.8-1.8-.7 1.8-.7z"/></svg><span>Draft with AI</span></button></div>
     <div class="tpl-pick" id="newTpls"></div>
     <div class="dlg-actions">
       <button value="cancel" formnovalidate>Cancel</button>
@@ -587,7 +592,6 @@
   </div>
 </dialog>
 
-<datalist id="clientList"></datalist>
 <!-- the whole UI: src/main.ts imports every part in order -->
 </body>
 </html>
